@@ -1,5 +1,14 @@
 # Snap Camera Server Auto Config
-Snap Camera Server Auto Configuration Tool for Windows
+[Snap Camera Server](https://github.com/ptrumpis/snap-camera-server) - Auto Configuration Tool for Windows
+
+## Requirements
+- [Docker](https://www.docker.com/)
+- [OpenSSL](https://slproweb.com/products/Win32OpenSSL.html)
+
+## Usage
+Download the latest [AutoConfig.exe](https://github.com/ptrumpis/snap-camera-server-auto-config/releases), place the file inside the server directory and execute!
+
+That's it!
 
 ## Notice: anti virus & malware reports
 The binary file can produce a false positive by your anti virus software. This is a known problem with AutoIt binary files https://www.autoitscript.com/wiki/AutoIt_and_Malware
