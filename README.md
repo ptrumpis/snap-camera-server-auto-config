@@ -1,12 +1,13 @@
 # Snap Camera Server Auto Config
-[Snap Camera Server](https://github.com/ptrumpis/snap-camera-server) - Auto Configuration Tool for Windows
+[Snap Camera Server v3](https://github.com/ptrumpis/snap-camera-server) - Auto Configuration Tool for Windows
 
 ## Requirements
 - [Docker](https://www.docker.com/)
 - [OpenSSL](https://slproweb.com/products/Win32OpenSSL.html)
 
 ## Usage
-Download the latest [AutoConfig.exe](https://github.com/ptrumpis/snap-camera-server-auto-config/releases), place the file inside the server directory and execute!
+1. Download the latest [AutoConfig.exe](https://github.com/ptrumpis/snap-camera-server-auto-config/releases)
+2. Place the file inside the server directory and execute!
 
 That's it!
 
