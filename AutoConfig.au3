@@ -29,7 +29,7 @@
 #RequireAdmin
 
 ;===============================================================
-;----------------------------- Install Config - You may change these values  -----------------------------
+; Install Config - You may change these values
 ;===============================================================
 
 ; Installer meta
@@ -119,15 +119,9 @@ If $result = $IDCANCEL Then Exit
 ;----------------------------- Check Server installation location  -----------------------------
 
 $serverInstallDir = @WorkingDir
-Local $serverFiles[6] = ["server.js", "package.json", "docker-compose.yml", "Dockerfile", "ssl", "src"]
-
-For $i = 0 To 5
-	$checkFile = $serverInstallDir & "\" & $serverFiles[$i]
-	If FileExists($checkFile) = 0 Then
-		$serverInstallDir = ""
-		ExitLoop
-	EndIf
-Next
+If isServerDir($serverInstallDir) = 0 Then
+	$serverInstallDir = ""
+EndIf
 
 ;----------------------------- Resolve unknown Server installation location  -----------------------------
 
@@ -187,6 +181,18 @@ EndIf
 RunDocker($serverInstallDir)
 
 ;----------------------------- Custom helper functions - magic happens here -----------------------------
+
+Func isServerDir($dir)
+	Local $serverFiles[6] = ["server.js", "package.json", "docker-compose.yml", "Dockerfile", "ssl", "src"]
+	For $i = 0 To 5
+		$checkFile = $dir & "\" & $serverFiles[$i]
+		If FileExists($checkFile) = 0 Then
+			Return 0
+			ExitLoop
+		EndIf
+	Next
+	Return 1
+EndFunc
 
 Func CheckHostsFile($ip, $host)
 	$filePath = @WindowsDir & "\System32\drivers\etc\hosts"
