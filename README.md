@@ -6,7 +6,7 @@
 [![GitHub forks](https://img.shields.io/github/forks/ptrumpis/snap-camera-server-auto-config?style=flat)](https://github.com/ptrumpis/snap-camera-server-auto-config/forks)
 
 # 👻 Snap Camera Server Auto Config
-[Snap Camera Server v3](https://github.com/ptrumpis/snap-camera-server) - Auto Configuration Tool for Windows **and now also for Mac OS (experimental)**!
+[Snap Camera Server](https://github.com/ptrumpis/snap-camera-server) - Auto Configuration Tool for Windows and Mac OS!
 
 ## ⚠️ Requirements
 - [Docker](https://www.docker.com/)
@@ -39,4 +39,4 @@ If you feel unsafe just go with the .au3 script file and run it yourself with [A
 
 ---
 
-© 2023-2024 [Patrick Trumpis](https://github.com/ptrumpis)
+© 2023-2025 [Patrick Trumpis](https://github.com/ptrumpis)
