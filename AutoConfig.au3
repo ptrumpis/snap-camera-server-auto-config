@@ -35,7 +35,7 @@
 
 ; Installer meta
 $appName = "Snap Camera Server Auto Config"
-$version = "1.1.0"
+$version = "1.1.1"
 
 ; IP adress of local Snap Camera server (Docker container)
 $ip = "127.0.0.1"
@@ -76,8 +76,8 @@ EndIf
 
 ;----------------------------- Pre Check Docker Installation -----------------------------
 
-$pid = Run("docker -v", "", @SW_HIDE)
-If $pid = 0 Then
+$infoPID = Run("docker -v", "", @SW_HIDE)
+If $infoPID = 0 Then
     If IsApplicationInstalled("Docker Desktop", -1) = 0 Then
         MsgBox($MB_SYSTEMMODAL, $mbTitle, "Please download Docker from:" & @CRLF & $dockerUrl)
     Else
@@ -90,14 +90,14 @@ EndIf
 
 $dockerPID = ProcessExists("Docker Desktop.exe")
 If $dockerPID = 0 Then
-    MsgBox($MB_SYSTEMMODAL, $mbTitle, "Please start Docker Desktop")
-    $dockerPID = ProcessWait("Docker Desktop.exe")
+    MsgBox($MB_SYSTEMMODAL, $mbTitle, "Please start Docker Desktop and try again.")
+        Exit
 EndIf
 
 ;----------------------------- Pre Check OpenSSL Installation -----------------------------
 
-$pid = Run($openSslPath & " help", "", @SW_HIDE)
-If $pid = 0 Then
+$sslPID = Run($openSslPath & " help", "", @SW_HIDE)
+If $sslPID = 0 Then
     If IsApplicationInstalled("OpenSSL", -1) = 0 Then
         MsgBox($MB_SYSTEMMODAL, $mbTitle, "Please download OpenSSL from:" & @CRLF & $openSslUrl)
         Exit
@@ -208,7 +208,7 @@ EndFunc
 
 Func CheckHostsFile($ip, $host)
     $filePath = @WindowsDir & "\System32\drivers\etc\hosts"
-    $arrLines = FileReadToArray ($filePath)
+    $arrLines = FileReadToArray($filePath)
     $nLines = Ubound($arrLines)
 
     For $i = 0 To ($nLines-1)
@@ -223,12 +223,23 @@ Func PatchHostsFile($ip, $host)
     $filePath = @WindowsDir & "\System32\drivers\etc\hosts"
     $newLine = $ip & "       " & $host & @CRLF
 
-    $fileContent = FileRead($filePath)
-    If @error Then Return 0
-
     FileCopy($filePath, $filePath & ".bak", $FC_OVERWRITE)
+    
+    $hFile = FileOpen($filePath, $FO_READ + $FO_UTF8_NOBOM)
+    If $hFile = -1 Then
+        ConsoleWrite("Failed to open " & $filePath & @CRLF)
+        Return 0
+    EndIf
+    
+    $fileContent = FileRead($hFile)
+    If @error Then
+        FileClose($hFile)
+        Return 0
+    EndIf
+    
+    FileClose($hFile)
 
-    $hFile = FileOpen($filePath, $FO_WRITE)
+    $hFile = FileOpen($filePath, $FO_READ + $FO_OVERWRITE + $FO_UTF8_NOBOM)
     If $hFile = -1 Then
         ConsoleWrite("Failed to open " & $filePath & @CRLF)
         Return 0
@@ -289,7 +300,6 @@ Func GetRegUninstallList($use64bit = 0)
         $sRegKey = RegEnumKey($sRegHive, $i)
         If @error Then ExitLoop
         $sDisplayName = RegRead($sRegHive & "\" & $sRegKey, "DisplayName")
-        If @error Then ContinueLoop
         _ArrayAdd($aUninstall, $sDisplayName)
         $i += 1
     WEnd
