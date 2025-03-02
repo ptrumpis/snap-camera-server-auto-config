@@ -10,7 +10,8 @@ echo "......................................."
 echo "macOS auto config v1.2.0 with ($SHELL)"
 [ -n "$BASH_VERSION" ] && echo "bash version $BASH_VERSION"
 [ -n "$ZSH_VERSION" ] && echo "zsh version $ZSH_VERSION"
-OS_version=$(sw_vers | awk '/ProductVersion/ {print $2}') || OS_version="(Unknown)"
+OS_version=$(sw_vers | awk '/ProductVersion/ {print $2}') || true
+[ -z "$OS_version" ] && OS_version="(Unknown)"
 architecture=$(uname -m)
 echo "OS Version: $OS_version"
 echo "Architecture: $architecture"
@@ -26,8 +27,12 @@ fi
 
 echo "🔍 Checking if jq is installed."
 if ! command -v jq &>/dev/null; then
-    echo "🛠️ Installing jq..."
-    brew install jq >/dev/null
+    if command -v brew &>/dev/null; then
+        echo "🛠️ Installing jq..."
+        brew install jq >/dev/null
+    else
+        echo "⚠️ jq is not installed." 
+    fi
 else
     echo "✅ jq is installed."
 fi
@@ -80,7 +85,7 @@ function is_container_running() {
 
 echo "🔍 Trying to determine server directory."
 project_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-if [[ -z "$project_dir" || ! -d "$project_dir" || ! $(verify_directory "$project_dir") ]]; then
+if [[ -z "$project_dir" || ! -d "$project_dir" || ! verify_directory "$project_dir" ]]; then
     while true; do
         user_input=$(osascript -e 'tell app "Finder" to set folderPath to POSIX path of (choose folder with prompt "Please select the Snap Camera Server directory:")' 2>/dev/null)
         if [[ $? -ne 0 ]]; then
