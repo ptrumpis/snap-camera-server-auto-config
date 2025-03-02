@@ -35,7 +35,7 @@
 
 ; Installer meta
 $appName = "Snap Camera Server Auto Config"
-$version = "1.1.1"
+$version = "1.2.0"
 
 ; IP adress of local Snap Camera server (Docker container)
 $ip = "127.0.0.1"
