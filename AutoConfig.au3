@@ -46,6 +46,7 @@ $subjectAltName = "*.snapchat.com"
 
 ; Application
 $processName = "Snap Camera.exe"
+$appPath = "C:\Program Files\Snap Inc\Snap Camera\Snap Camera.exe"
 
 ; OpenSSL Path/CMD
 $openSslPath = "openssl"
@@ -160,6 +161,16 @@ If $openSslPath = "" Then
     EndIf
 EndIf
 
+;----------------------------- Resolve Docker Windows container mode  -----------------------------
+
+If GetDockerOSType() = "windows" Then
+    Local $answer = MsgBox($MB_YESNO + $MB_ICONQUESTION, "Docker Container Mode", "Docker runs in Windows container mode. For the server to work properly, Docker needs to switch to Linux containers Want to switch to Linux containers?")
+    If $answer = $IDYES Then
+        SwitchToLinuxContainers()
+        MsgBox($MB_OK, "Successful", "Docker has been switched to Linux containers.")
+    EndIf
+EndIf
+
 ;----------------------------- 1. Create a default .env configuration file -----------------------------
 
 FileCopy($serverInstallDir & "\example.env", $serverInstallDir & "\.env", $FC_NOOVERWRITE)
@@ -188,7 +199,13 @@ EndIf
 
 KillProcess($processName)
 
-;----------------------------- 6. Initialize Docker container for the first time  -----------------------------
+;----------------------------- 6. Check the Windows Firewall  -----------------------------
+
+If IsAppBlocked($appPath) Then
+    UnblockApp($appPath)
+EndIf
+
+;----------------------------- 7. Initialize Docker container for the first time  -----------------------------
 
 RunDocker($serverInstallDir)
 
@@ -270,6 +287,38 @@ EndFunc
 Func RunDocker($workingDir)
     TrayTip("Running Docker", "docker compose up", 10, $TIP_NOSOUND)
     ShellExecuteWait("docker", "compose up", $workingDir)
+EndFunc
+
+Func GetDockerOSType()
+    Local $output = Run(@ComSpec & " /c docker info | findstr /C:""OSType""", "", @SW_HIDE, $STDOUT_CHILD)
+    Local $result = StdoutRead($output)
+    If StringInStr($result, "windows") Then
+        Return "windows"
+    Else
+        Return "linux"
+    EndIf
+EndFunc
+
+Func SwitchToLinuxContainers()
+    RunWait('C:\Program Files\Docker\Docker\DockerCli.exe -SwitchLinuxEngine', "", @SW_HIDE)
+EndFunc
+
+Func UnblockApp($app)
+    TrayTip("Unblocking Snap Camera", "Allowing Snap Camera in Windows Firewall.", 10, $TIP_NOSOUND)
+    RunWait('powershell -Command "Remove-NetFirewallRule -Program ''' & $app & ''' -Direction Inbound"', "", @SW_HIDE)
+    RunWait('powershell -Command "Remove-NetFirewallRule -Program ''' & $app & ''' -Direction Outbound"', "", @SW_HIDE)
+    RunWait('powershell -Command "New-NetFirewallRule -DisplayName ''Snap Camera Inbound'' -Direction Inbound -Action Allow -Program ''' & $app & ''' -Enabled True"', "", @SW_HIDE)
+    RunWait('powershell -Command "New-NetFirewallRule -DisplayName ''Snap Camera Outbound'' -Direction Outbound -Action Allow -Program ''' & $app & ''' -Enabled True"', "", @SW_HIDE)
+EndFunc
+
+Func IsAppBlocked($app)
+    Local $psCommand = 'Get-NetFirewallApplicationFilter | Where-Object { $_.Program -eq "' & $app & '" } | Select-Object -ExpandProperty Name'
+    Local $cmd = 'powershell -Command "' & $psCommand & '"'
+    Local $result = RunWait(@ComSpec & " /C " & $cmd, "", @SW_HIDE)
+    If StringLen($result) > 0 Then
+        Return True
+    EndIf
+    Return False
 EndFunc
 
 Func IsApplicationInstalled($appName, $is64bit = -1)
