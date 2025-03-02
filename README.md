@@ -6,17 +6,26 @@
 [![GitHub forks](https://img.shields.io/github/forks/ptrumpis/snap-camera-server-auto-config?style=flat)](https://github.com/ptrumpis/snap-camera-server-auto-config/forks)
 
 # 👻 Snap Camera Server Auto Config
-[Snap Camera Server](https://github.com/ptrumpis/snap-camera-server) - Auto Configuration Tool for Windows and Mac OS!
+[Snap Camera Server](https://github.com/ptrumpis/snap-camera-server) - Auto Configuration Tool for Windows and macOS.
 
 ## ⚠️ Requirements
+- [Snap Camera Server](https://github.com/ptrumpis/snap-camera-server)
 - [Docker](https://www.docker.com/)
 - [OpenSSL (Windows)](https://slproweb.com/products/Win32OpenSSL.html)
 
 ## 🚀 Usage
-- Download the latest [AutoConfig.exe](https://github.com/ptrumpis/snap-camera-server-auto-config/releases) for Windows
-- Download the latest [AutoConfig.applescript](https://github.com/ptrumpis/snap-camera-server-auto-config/releases) for Mac OS
+Download [Snap Camera Server](https://github.com/ptrumpis/snap-camera-server/releases/latest) and make sure [Docker](https://www.docker.com/) is installed and running.  
+Windows users will also have to download and install [OpenSSL](https://slproweb.com/products/Win32OpenSSL.html).
 
-Place the file inside the server directory and execute!
+### Windows
+Download the latest [AutoConfig.exe](https://github.com/ptrumpis/snap-camera-server-auto-config/releases/latest) for Windows.  
+Place the file inside your server directory and execute!
+
+### macOS
+Copy and run this command inside your Terminal window.
+```bash
+sudo /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/ptrumpis/snap-camera-server-auto-config/master/macOS/autoconfig.sh)"
+```
 
 That's it!
 
@@ -33,7 +42,7 @@ You can also become my GitHub Sponsor
 [![Sponsor](https://img.shields.io/badge/sponsor-30363D?style=for-the-badge&logo=GitHub-Sponsors&logoColor=#white)](https://github.com/sponsors/ptrumpis)
 
 ## ℹ️ Notice: anti virus & malware reports
-The binary file can produce a false positive by your anti virus software. This is a known problem with AutoIt binary files https://www.autoitscript.com/wiki/AutoIt_and_Malware
+The Windows binary file can produce a false positive by your anti virus software. This is a known problem with AutoIt binary files https://www.autoitscript.com/wiki/AutoIt_and_Malware
 
 If you feel unsafe just go with the .au3 script file and run it yourself with [AutoIt](https://www.autoitscript.com/site/autoit/downloads/), you don't need the binary file.
 
