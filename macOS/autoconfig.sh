@@ -85,7 +85,7 @@ function is_container_running() {
 
 echo "🔍 Trying to determine server directory."
 project_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-if [[ -z "$project_dir" || ! -d "$project_dir" || ! verify_directory "$project_dir" ]]; then
+if [ -z "${project_dir}" ] || [ ! -d "${project_dir}" ] || ! verify_directory "${project_dir}"; then
     while true; do
         user_input=$(osascript -e 'tell app "Finder" to set folderPath to POSIX path of (choose folder with prompt "Please select the Snap Camera Server directory:")' 2>/dev/null)
         if [[ $? -ne 0 ]]; then
